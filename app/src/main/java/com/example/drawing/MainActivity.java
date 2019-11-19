@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
             initInstrumentBtn(R.id.btn_clean, Instrument.CLEAN_ALL);
             initInstrumentBtn(R.id.btn_point, Instrument.POIT);
             initInstrumentBtn(R.id.btn_line, Instrument.LINE);
+            initInstrumentBtn(R.id.btn_curve, Instrument.CURVE);
             initInstrumentBtn(R.id.btn_square, Instrument.SQUARE);
     }
 

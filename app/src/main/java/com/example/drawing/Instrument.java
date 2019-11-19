@@ -1,5 +1,5 @@
 package com.example.drawing;
 
 public enum Instrument {
-    POIT, LINE, SQUARE, CLEAN_ALL
+    POIT, LINE, CURVE, SQUARE, CLEAN_ALL
 }

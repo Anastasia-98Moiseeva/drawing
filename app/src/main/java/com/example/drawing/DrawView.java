@@ -55,6 +55,9 @@ public class DrawView extends View {
                 case LINE:
                     canvas.drawLine(draw.getCurrent().x, draw.getCurrent().y, draw.getOrigin().x, draw.getOrigin().y, mPaint);
                     break;
+                case CURVE:
+                    canvas.drawPath(draw.getPath(), mPaint);
+                    break;
                 case SQUARE:
                     float left = Math.min(draw.getCurrent().x, draw.getOrigin().x);
                     float right = Math.max(draw.getCurrent().x, draw.getOrigin().x);
@@ -85,7 +88,9 @@ public class DrawView extends View {
             case MotionEvent.ACTION_MOVE:
                 if(mCurrentDraw != null){
                     mCurrentDraw.setCurrent(current);
-                    invalidate();
+                }
+                if(mInstrument == Instrument.CURVE){
+                    mList.get(mList.size()-1).getPath().lineTo(event.getX(), event.getY());
                 }
                 break;
             case MotionEvent.ACTION_UP:

@@ -159,6 +159,12 @@
             android:background="@drawable/ic_line_foreground" />
 
         <ImageButton
+            android:id="@+id/btn_curve"
+            android:layout_width="@dimen/btnSize"
+            android:layout_height="@dimen/btnSize"
+            android:background="@drawable/ic_curve_foreground" />
+
+        <ImageButton
             android:id="@+id/btn_square"
             android:layout_width="@dimen/btnSize"
             android:layout_height="@dimen/btnSize"
