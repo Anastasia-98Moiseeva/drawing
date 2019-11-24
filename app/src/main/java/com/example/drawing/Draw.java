@@ -2,6 +2,7 @@ package com.example.drawing;
 
 import android.graphics.Path;
 import android.graphics.PointF;
+import android.util.SparseArray;
 
 
 public class Draw {
@@ -10,6 +11,8 @@ public class Draw {
     private int color;
     private Instrument instrument;
     private Path path;
+    private SparseArray<PointF> activePoints;
+
 
     public Draw(PointF origin, int color, Instrument instrument){
         this.origin = origin;
@@ -18,6 +21,7 @@ public class Draw {
         this.instrument = instrument;
         this.path = new Path();
         path.moveTo(origin.x, origin.y);
+        activePoints = new SparseArray<>();
     }
 
     public int getColor(){
@@ -46,5 +50,13 @@ public class Draw {
 
     public Path getPath(){
         return path;
+    }
+
+    public SparseArray<PointF> getActivePoints() {
+        return activePoints;
+    }
+
+    public void addActivePoint(int id, PointF point){
+        activePoints.put(id, point);
     }
 }

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -65,6 +66,18 @@ public class DrawView extends View {
                     float bottom = Math.max(draw.getCurrent().y, draw.getOrigin().y);
                     canvas.drawRect(left, top, right, bottom, mPaint);
                     break;
+                case POLYGON:
+                    SparseArray<PointF> activePoints = draw.getActivePoints();
+                    if(activePoints.size() == 1)
+                        canvas.drawPoint(activePoints.get(0).x, activePoints.get(0).y, mPaint);
+                    else
+                        for (int i = 0; i < activePoints.size(); i++) {
+                            float x = activePoints.get(i).x;
+                            float y = activePoints.get(i).y;
+                            float nextX = (i+1 == activePoints.size())? activePoints.get(0).x : activePoints.get(i+1).x;
+                            float nextY = (i+1 == activePoints.size())? activePoints.get(0).y : activePoints.get(i+1).y;
+                            canvas.drawLine(x, y, nextX, nextY, mPaint);
+                        }
             }
         }
     }
@@ -78,12 +91,21 @@ public class DrawView extends View {
     public boolean onTouchEvent(MotionEvent event){
         PointF current = new PointF(event.getX(), event.getY());
 
-        int action = event.getAction();
-
+        int action = event.getActionMasked();
         switch (action){
             case MotionEvent.ACTION_DOWN:
                 mCurrentDraw = new Draw(current, mColor, mInstrument);
                 mList.add(mCurrentDraw);
+                int pointId = event.getPointerId(event.getActionIndex());
+                mCurrentDraw.addActivePoint(pointId, current);
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                PointF p = new PointF();
+                int pointIndex = event.getActionIndex();
+                int pId = event.getPointerId(pointIndex);
+                p.x = event.getX(pointIndex);
+                p.y = event.getY(pointIndex);
+                mCurrentDraw.addActivePoint(pId, p);
                 break;
             case MotionEvent.ACTION_MOVE:
                 if(mCurrentDraw != null){
@@ -92,8 +114,17 @@ public class DrawView extends View {
                 if(mInstrument == Instrument.CURVE){
                     mList.get(mList.size()-1).getPath().lineTo(event.getX(), event.getY());
                 }
+                if(mInstrument == Instrument.POLYGON){
+                    for (int i = 0; i < event.getPointerCount(); i++) {
+                        int id = event.getPointerId(i);
+                        PointF point = mCurrentDraw.getActivePoints().get(id);
+                        point.x = event.getX(i);
+                        point.y = event.getY(i);
+                    }
+                }
                 break;
             case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_CANCEL:
             default:
                 return super.onTouchEvent(event);
